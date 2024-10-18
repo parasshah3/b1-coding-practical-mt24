@@ -137,8 +137,8 @@ class ClosedLoop:
 
         for t in range(T):
             positions[t] = self.plant.get_position()
-            current_depth[t] = self.plant.get_depth()
-            reference_depth[t] = mission.reference[t] #get desired reference depth from the mission
+            current_depth = self.plant.get_depth()
+            reference_depth = mission.reference[t] #get desired reference depth from the mission
 
             # Call your controller here
             actions[t] = self.controller.compute_action(current_depth, reference_depth)
