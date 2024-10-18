@@ -2,8 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
-from .terrain import generate_reference_and_limits
-from .control import PDController
+from uuv_mission.terrain import generate_reference_and_limits
+from uuv_mission.control import PDController
 
 import pandas as pd
 
