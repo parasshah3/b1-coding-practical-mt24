@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
-from .terrain import generate_reference_and_limits
+from terrain import generate_reference_and_limits
 
 import pandas as pd
 class Submarine:
@@ -20,9 +20,9 @@ class Submarine:
         self.vel_x = 1 # Constant velocity in x direction
         self.vel_y = 0
 
-        """
-        transition method updates the positon and velocity of submarine after each time step, dt based on the controller action and disturbances
-        """
+    
+        #transition method updates the positon and velocity of submarine after each time step, dt based on the controller action and disturbances
+        
     def transition(self, action: float, disturbance: float):
         self.pos_x += self.vel_x * self.dt
         self.pos_y += self.vel_y * self.dt
@@ -50,17 +50,17 @@ class Trajectory:
         self.position = position  
 
 
-"""
-plot method plots the trajectory of the submarine over time
-"""
+
+#plot method plots the trajectory of the submarine over time
+
     def plot(self):
         plt.plot(self.position[:, 0], self.position[:, 1])
         plt.show()
 
 
-"""
-plot_completed_mission method plots completed trajectory of sumbarine along with reference depth (from mission class) and cave limits
-"""
+
+#plot_completed_mission method plots completed trajectory of sumbarine along with reference depth (from mission class) and cave limits
+
     def plot_completed_mission(self, mission: Mission):
         x_values = np.arange(len(mission.reference)) #represent time steps corresponding to length of mission NOT x position
 
@@ -87,10 +87,10 @@ class Mission:
     cave_height: np.ndarray
     cave_depth: np.ndarray
 
-"""
-random_mission mehtod generates a random mission with specified duration and scale.
-Returns random mission with target depth reference, cave height and depth limits via 3 numpy arrays
-"""
+
+#random_mission mehtod generates a random mission with specified duration and scale.
+#Returns random mission with target depth reference, cave height and depth limits via 3 numpy arrays
+
     @classmethod
     def random_mission(cls, duration: int, scale: float): #cls refers to class itself in class methods
         (reference, cave_height, cave_depth) = generate_reference_and_limits(duration, scale)
@@ -143,3 +143,16 @@ class ClosedLoop:
     def simulate_with_random_disturbances(self, mission: Mission, variance: float = 0.5) -> Trajectory:
         disturbances = np.random.normal(0, variance, len(mission.reference))
         return self.simulate(mission, disturbances)
+
+# Test calling the from_csv method
+if __name__ == "__main__":
+    # Use the absolute path to the mission.csv file
+    mission_file = "/Users/paras/Library/CloudStorage/OneDrive-Nexus365/Oxford/Y3/B1/Scientific Coding/Scientific Coding Practical/B1 Coding Practical MT24/data/mission.csv"
+    
+    # Call the from_csv method to load the mission data
+    mission = Mission.from_csv(mission_file)
+    
+    # Print out the loaded data to verify
+    print("Reference Depths:", mission.reference)
+    print("Cave Heights:", mission.cave_height)
+    print("Cave Depths:", mission.cave_depth)
