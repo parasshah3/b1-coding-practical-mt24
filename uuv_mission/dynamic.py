@@ -3,8 +3,10 @@ from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
+from .control import PDController
 
 import pandas as pd
+
 class Submarine:
     def __init__(self):
 
@@ -125,6 +127,7 @@ class ClosedLoop:
     def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
 
         T = len(mission.reference)
+        print("T is ", T)
         if len(disturbances) < T:
             raise ValueError("Disturbances must be at least as long as mission duration")
         
@@ -134,8 +137,12 @@ class ClosedLoop:
 
         for t in range(T):
             positions[t] = self.plant.get_position()
-            observation_t = self.plant.get_depth()
+            current_depth[t] = self.plant.get_depth()
+            reference_depth[t] = mission.reference[t] #get desired reference depth from the mission
+
             # Call your controller here
+            actions[t] = self.controller.compute_action(current_depth, reference_depth)
+
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)
