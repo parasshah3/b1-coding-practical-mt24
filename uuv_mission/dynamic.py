@@ -9,23 +9,27 @@ class Submarine:
 
         self.mass = 1
         self.drag = 0.1
-        self.actuator_gain = 1
+        self.actuator_gain = 1 #affects how much controller impacts movement
 
         self.dt = 1 # Time step for discrete time simulation
 
+        #inital positions and velocity
         self.pos_x = 0
         self.pos_y = 0
         self.vel_x = 1 # Constant velocity in x direction
         self.vel_y = 0
 
-
+        """
+        transition method updates the positon and velocity of submarine after each time step, dt based on the controller action and disturbances
+        """
     def transition(self, action: float, disturbance: float):
         self.pos_x += self.vel_x * self.dt
         self.pos_y += self.vel_y * self.dt
 
-        force_y = -self.drag * self.vel_y + self.actuator_gain * (action + disturbance)
+        force_y = -self.drag * self.vel_y + self.actuator_gain * (action + disturbance) #opposing drag force, scaled controller action, scaled disturbance
         acc_y = force_y / self.mass
         self.vel_y += acc_y * self.dt
+
 
     def get_depth(self) -> float:
         return self.pos_y
@@ -40,23 +44,37 @@ class Submarine:
         self.vel_y = 0
     
 class Trajectory:
-    def __init__(self, position: np.ndarray):
+    def __init__(self, position: np.ndarray): 
+        #position- numpy array which contains x and y positions over time (index corresponds to subsequent time steps)
         self.position = position  
-        
+
+
+"""
+plot method plots the trajectory of the submarine over time
+"""
     def plot(self):
         plt.plot(self.position[:, 0], self.position[:, 1])
         plt.show()
 
+
+"""
+plot_completed_mission method plots completed trajectory of sumbarine along with reference depth (from mission class) and cave limits
+"""
     def plot_completed_mission(self, mission: Mission):
-        x_values = np.arange(len(mission.reference))
+        x_values = np.arange(len(mission.reference)) #represent time steps corresponding to length of mission NOT x position
+
+        #Find min and max height (cave limits) at each time stamp from mission class
         min_depth = np.min(mission.cave_depth)
         max_height = np.max(mission.cave_height)
 
-        plt.fill_between(x_values, mission.cave_height, mission.cave_depth, color='blue', alpha=0.3)
+        plt.fill_between(x_values, mission.cave_height, mission.cave_depth, color='blue', alpha=0.3) #Fills water within cave itself blue
+        
+        #Fills cave itself (i.e. the rock) brown
         plt.fill_between(x_values, mission.cave_depth, min_depth*np.ones(len(x_values)), 
                          color='saddlebrown', alpha=0.3)
         plt.fill_between(x_values, max_height*np.ones(len(x_values)), mission.cave_height, 
                          color='saddlebrown', alpha=0.3)
+                       
         plt.plot(self.position[:, 0], self.position[:, 1], label='Trajectory')
         plt.plot(mission.reference, 'r', linestyle='--', label='Reference')
         plt.legend(loc='upper right')
@@ -64,12 +82,16 @@ class Trajectory:
 
 @dataclass
 class Mission:
-    reference: np.ndarray
+    reference: np.ndarray #initalising???
     cave_height: np.ndarray
     cave_depth: np.ndarray
 
+"""
+random_mission mehtod generates a random mission with specified duration and scale.
+Returns random mission with target depth reference, cave height and depth limits via 3 numpy arrays
+"""
     @classmethod
-    def random_mission(cls, duration: int, scale: float):
+    def random_mission(cls, duration: int, scale: float): #cls refers to class itself in class methods
         (reference, cave_height, cave_depth) = generate_reference_and_limits(duration, scale)
         return cls(reference, cave_height, cave_depth)
 
