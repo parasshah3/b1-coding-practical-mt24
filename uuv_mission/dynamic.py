@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
-from terrain import generate_reference_and_limits
+from .terrain import generate_reference_and_limits
 
 import pandas as pd
 class Submarine:
@@ -102,7 +102,7 @@ class Mission:
         
         df = pd.read_csv(file_name) #define data frame
 
-        num_rows = len(df.rows)
+        num_rows = df.shape[0]
         print('number of rows ', num_rows)
         
         #Extract columns from .csv file
