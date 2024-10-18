@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
 
+import pandas as pd
 class Submarine:
     def __init__(self):
 
@@ -98,7 +99,22 @@ Returns random mission with target depth reference, cave height and depth limits
     @classmethod
     def from_csv(cls, file_name: str):
         # You are required to implement this method
-        pass
+        
+        df = pd.read_csv(file_name) #define data frame
+
+        num_rows = len(df.rows)
+        print('number of rows ', num_rows)
+        
+        #Extract columns from .csv file
+        reference = df['reference'].to_numpy()
+        cave_height = df['cave_height'].to_numpy()
+        cave_depth = df['cave_depth'].to_numpy() 
+
+        # Step 3: Return a new instance of the Mission class
+        return cls(reference=reference, cave_height=cave_height, cave_depth=cave_depth)
+
+
+        
 
 
 class ClosedLoop:
