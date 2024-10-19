@@ -4,9 +4,9 @@ import pandas as pd
 
 def generate_random_multisine_timeseries(length=100):
 
-    t = np.linspace(0, 2 * np.pi, length)
+    t = np.linspace(0, 2 * np.pi, length) #generating time steps array
     
-    frequncies = np.array([0.05,0.1,0.5,1])
+    frequncies = np.array([0.05,0.1,0.5,1]) 
 
     # Generate a multisine time series by summing sine waves with random frequencies and amplitudes
     multisine_series = np.zeros(length)
@@ -16,14 +16,18 @@ def generate_random_multisine_timeseries(length=100):
     
     return t, multisine_series
 
+"""
+Generates a random reference and cave limits for a given duration and scale
+"""
 def generate_reference_and_limits(duration, scale):
 
-    reference = scale*generate_random_multisine_timeseries(duration)[1]
+    reference = scale*generate_random_multisine_timeseries(duration)[1]#generate a random multisine time series as reference
 
-    bound = 3*scale
-    upper_margin = bound*np.ones(duration)
+    bound = 3*scale #inital bound for cave margins
+    upper_margin = bound*np.ones(duration) #generates an array of 1s 
     lower_margin = bound*np.ones(duration)
-    alpha = 0.6
+    alpha = 0.6 #smoothening factor
+
     for t in range(duration-1):
         upper_margin[t+1] = alpha*upper_margin[t] + (1-alpha)*np.random.uniform(0.5, bound)
         lower_margin[t+1] = alpha*lower_margin[t] + (1-alpha)*np.random.uniform(0.5, bound)
