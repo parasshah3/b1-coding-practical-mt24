@@ -21,6 +21,11 @@ class PDController:
         
         # Control action is proportional to the error and derivative of the error
         action = self.kp * error + self.kd * derivative
+
+        # Limit the action to avoid overly large control inputs
+        max_action = 1  # Adjust this value as needed
+        action = max(min(action, max_action), -max_action)
+    
         
         # Update previous error for the next time step
         self.previous_error = error
