@@ -151,15 +151,9 @@ class ClosedLoop:
         disturbances = np.random.normal(0, variance, len(mission.reference))
         return self.simulate(mission, disturbances)
 
-# Test calling the from_csv method
-if __name__ == "__main__":
-    # Use the absolute path to the mission.csv file
-    mission_file = "/Users/paras/Library/CloudStorage/OneDrive-Nexus365/Oxford/Y3/B1/Scientific Coding/Scientific Coding Practical/B1 Coding Practical MT24/data/mission.csv"
-    
-    # Call the from_csv method to load the mission data
-    mission = Mission.from_csv(mission_file)
-    
-    # Print out the loaded data to verify
-    print("Reference Depths:", mission.reference)
-    print("Cave Heights:", mission.cave_height)
-    print("Cave Depths:", mission.cave_depth)
+def calculate_mae(reference_depth, actual_depth):
+    """
+    Calculate the Mean Absolute Error (MAE) between the reference depth and actual depth.
+    """
+    mae = np.mean(np.abs(reference_depth - actual_depth))
+    return mae
